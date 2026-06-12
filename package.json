@@ -28,7 +28,9 @@
     "build": "n8n-node build",
     "dev": "n8n-node dev",
     "lint": "n8n-node lint",
-    "lint:fix": "n8n-node lint --fix"
+    "lint:fix": "n8n-node lint --fix",
+    "release": "n8n-node release",
+    "prepublishOnly": "n8n-node prerelease"
   },
   "files": [
     "dist",
@@ -50,6 +52,7 @@
     "@n8n/node-cli": "0.23.1",
     "@types/node": "20.10.0",
     "n8n-workflow": "2.13.1",
+    "release-it": "19.2.4",
     "typescript": "5.3.3"
   },
   "peerDependencies": {
