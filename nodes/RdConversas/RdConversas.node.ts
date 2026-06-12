@@ -19,6 +19,34 @@ type RdConversasResource =
 	| 'campaigns'
 	| 'metadata';
 
+type ResourceExecutor = (
+	context: IExecuteFunctions,
+	itemIndex: number,
+	operation: string,
+) => Promise<IDataObject | IDataObject[]>;
+
+const RESOURCE_EXECUTORS: Record<RdConversasResource, ResourceExecutor> = {
+	messages: (context, itemIndex, operation) => resources.executeMessages(context, itemIndex, operation),
+	contacts: (context, itemIndex) => resources.executeContacts(context, itemIndex),
+	employees: (context, itemIndex) => resources.executeEmployees(context, itemIndex),
+	wallets: (context, itemIndex, operation) => resources.executeWallets(context, itemIndex, operation),
+	templates: (context, itemIndex) => resources.executeTemplates(context, itemIndex),
+	campaigns: (context, itemIndex) => resources.executeCampaigns(context, itemIndex),
+	metadata: (context, itemIndex, operation) => resources.executeMetadata(context, itemIndex, operation),
+};
+
+function appendResults(
+	returnData: IDataObject[],
+	result: IDataObject | IDataObject[] | undefined,
+): void {
+	if (Array.isArray(result)) {
+		returnData.push(...result);
+		return;
+	}
+
+	if (result) returnData.push(result);
+}
+
 export class RdConversas implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'RD Station Conversas',
@@ -162,31 +190,14 @@ export class RdConversas implements INodeType {
 			try {
 				const resource = this.getNodeParameter('resource', i) as RdConversasResource;
 				const operation = this.getNodeParameter('operation', i) as string;
-				let result: IDataObject | IDataObject[] | undefined;
+				const executor = RESOURCE_EXECUTORS[resource];
 
-				if (resource === 'messages') {
-					result = await resources.executeMessages(this, i, operation);
-				} else if (resource === 'contacts') {
-					result = await resources.executeContacts(this, i);
-				} else if (resource === 'employees') {
-					result = await resources.executeEmployees(this, i);
-				} else if (resource === 'wallets') {
-					result = await resources.executeWallets(this, i, operation);
-				} else if (resource === 'templates') {
-					result = await resources.executeTemplates(this, i);
-				} else if (resource === 'campaigns') {
-					result = await resources.executeCampaigns(this, i);
-				} else if (resource === 'metadata') {
-					result = await resources.executeMetadata(this, i, operation);
-				} else {
+				if (!executor) {
 					throw new NodeOperationError(this.getNode(), `Unknown resource: ${resource}`, { itemIndex: i });
 				}
 
-				if (Array.isArray(result)) {
-					for (const entry of result) returnData.push(entry);
-				} else if (result) {
-					returnData.push(result);
-				}
+				const result = await executor(this, i, operation);
+				appendResults(returnData, result);
 			} catch (error) {
 				if (this.continueOnFail()) {
 					returnData.push({ error: (error as Error).message, itemIndex: i });
