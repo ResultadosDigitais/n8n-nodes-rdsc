@@ -1,4 +1,10 @@
-import type { IAuthenticateGeneric, ICredentialType, INodeProperties, Icon } from 'n8n-workflow';
+import type {
+	IAuthenticateGeneric,
+	ICredentialTestRequest,
+	ICredentialType,
+	INodeProperties,
+	Icon,
+} from 'n8n-workflow';
 
 export class RdConversasApi implements ICredentialType {
 	name = 'rdConversasApi';
@@ -40,6 +46,16 @@ export class RdConversasApi implements ICredentialType {
 		properties: {
 			headers: {
 				Authorization: '=Bearer {{$credentials.jwtToken}}',
+			},
+		},
+	};
+
+	test: ICredentialTestRequest = {
+		request: {
+			baseURL: '={{$credentials.baseUrl}}',
+			url: '/v2/employees',
+			qs: {
+				limit: 1,
 			},
 		},
 	};

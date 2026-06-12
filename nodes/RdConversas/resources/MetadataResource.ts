@@ -17,7 +17,14 @@ async function listMetadata(
 	const returnAll = context.getNodeParameter('returnAll', itemIndex, true) as boolean;
 	const limit = context.getNodeParameter('limit', itemIndex, 50) as number;
 
-	return fetchSimpleList(context, itemIndex, `${baseUrl}${endpoint}`, returnAll, limit, [listKey]);
+	return fetchSimpleList({
+		context,
+		itemIndex,
+		url: `${baseUrl}${endpoint}`,
+		returnAll,
+		limit,
+		listKeys: [listKey],
+	});
 }
 
 export async function executeMetadata(

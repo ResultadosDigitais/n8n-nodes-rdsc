@@ -19,17 +19,17 @@ async function listContacts(context: IExecuteFunctions, itemIndex: number, baseU
 	const extraQs: IDataObject = {};
 	if (hasString(channels)) extraQs.channels = channels.trim();
 
-	return fetchPaginatedList(
+	return fetchPaginatedList({
 		context,
 		itemIndex,
-		`${baseUrl}/v2/customers`,
+		url: `${baseUrl}/v2/customers`,
 		returnAll,
 		limit,
 		pageSize,
-		50,
-		['customers'],
+		defaultPageSize: 50,
+		listKeys: ['customers'],
 		extraQs,
-	);
+	});
 }
 
 async function getContactByPhone(

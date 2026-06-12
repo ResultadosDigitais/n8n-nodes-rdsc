@@ -20,16 +20,16 @@ export async function executeCampaigns(
 			const limit = context.getNodeParameter('limit', itemIndex, 50) as number;
 			const pageSize = context.getNodeParameter('pageSize', itemIndex, 25) as number;
 
-			return fetchPaginatedList(
+			return fetchPaginatedList({
 				context,
 				itemIndex,
-				`${baseUrl}/v1/campaigns`,
+				url: `${baseUrl}/v1/campaigns`,
 				returnAll,
 				limit,
 				pageSize,
-				25,
-				['campaigns'],
-			);
+				defaultPageSize: 25,
+				listKeys: ['campaigns'],
+			});
 		}
 		case 'get': {
 			const campaignId = requireString(

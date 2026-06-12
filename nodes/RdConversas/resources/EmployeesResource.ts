@@ -19,14 +19,14 @@ export async function executeEmployees(
 			const returnAll = context.getNodeParameter('returnAll', itemIndex, false) as boolean;
 			const limit = context.getNodeParameter('limit', itemIndex, 50) as number;
 
-			return fetchSimpleList(
+			return fetchSimpleList({
 				context,
 				itemIndex,
-				`${baseUrl}/v2/employees`,
+				url: `${baseUrl}/v2/employees`,
 				returnAll,
 				limit,
-				['employees'],
-			);
+				listKeys: ['employees'],
+			});
 		}
 		case 'get': {
 			const employeeId = requireString(

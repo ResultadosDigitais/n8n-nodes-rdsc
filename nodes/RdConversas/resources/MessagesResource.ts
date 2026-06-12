@@ -96,16 +96,16 @@ async function getMessageHistory(
 	const limit = context.getNodeParameter('limit', itemIndex, 50) as number;
 	const pageSize = context.getNodeParameter('pageSize', itemIndex, 50) as number;
 
-	return fetchPaginatedList(
+	return fetchPaginatedList({
 		context,
 		itemIndex,
-		`${baseUrl}/v2/messages/history`,
+		url: `${baseUrl}/v2/messages/history`,
 		returnAll,
 		limit,
 		pageSize,
-		50,
-		['messages', 'history'],
-	);
+		defaultPageSize: 50,
+		listKeys: ['messages', 'history'],
+	});
 }
 
 export async function executeMessages(

@@ -105,10 +105,10 @@ export class RdConversas implements INodeType {
 				displayOptions: { show: { resource: ['contacts'] } },
 				default: 'getAll',
 				options: [
-					{ name: 'Create', value: 'create', action: 'Create a WhatsApp contact' },
+					{ name: 'Create', value: 'create', action: 'Create a whats app contact' },
 					{ name: 'Get Many', value: 'getAll', action: 'List contacts' },
 					{ name: 'Get by Phone', value: 'getByPhone', action: 'Get a contact by phone' },
-					{ name: 'Update', value: 'update', action: 'Update a WhatsApp contact' },
+					{ name: 'Update', value: 'update', action: 'Update a whats app contact' },
 				],
 			},
 			{
@@ -167,7 +167,7 @@ export class RdConversas implements INodeType {
 				options: [
 					{ name: 'Get Job', value: 'getJob', action: 'Get async job status' },
 					{ name: 'List Flows', value: 'listFlows', action: 'List flows' },
-					{ name: 'List WhatsApp Integrations', value: 'listWhatsappIntegrations', action: 'List WhatsApp integrations' },
+					{ name: 'List WhatsApp Integrations', value: 'listWhatsappIntegrations', action: 'List whats app integrations' },
 					{ name: 'List Workflows', value: 'listWorkflows', action: 'List workflows' },
 				],
 			},

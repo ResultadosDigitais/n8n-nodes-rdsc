@@ -16,12 +16,12 @@ export async function executeTemplates(
 	const returnAll = context.getNodeParameter('returnAll', itemIndex, false) as boolean;
 	const limit = context.getNodeParameter('limit', itemIndex, 50) as number;
 
-	return fetchSimpleList(
+	return fetchSimpleList({
 		context,
 		itemIndex,
-		`${baseUrl}/v2/templates`,
+		url: `${baseUrl}/v2/templates`,
 		returnAll,
 		limit,
-		['templates'],
-	);
+		listKeys: ['templates'],
+	});
 }

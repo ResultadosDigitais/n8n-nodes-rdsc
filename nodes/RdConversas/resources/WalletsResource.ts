@@ -21,14 +21,14 @@ export async function executeWallets(
 			const returnAll = context.getNodeParameter('returnAll', itemIndex, false) as boolean;
 			const limit = context.getNodeParameter('limit', itemIndex, 50) as number;
 
-			return fetchSimpleList(
+			return fetchSimpleList({
 				context,
 				itemIndex,
-				`${baseUrl}/v2/wallets`,
+				url: `${baseUrl}/v2/wallets`,
 				returnAll,
 				limit,
-				['wallets'],
-			);
+				listKeys: ['wallets'],
+			});
 		}
 		case 'addContact': {
 			const walletName = requireString(

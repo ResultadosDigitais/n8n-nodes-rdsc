@@ -73,6 +73,7 @@ export class RdConversasTrigger implements INodeType {
 				description: 'Optional value for the authentication header',
 			},
 		],
+		usableAsTool: true,
 	};
 
 	async webhook(this: IWebhookFunctions): Promise<IWebhookResponseData> {

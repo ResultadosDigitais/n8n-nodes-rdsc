@@ -4,6 +4,21 @@ import { rdConversasRequest } from './Helpers';
 
 export const CREDENTIAL_NAME = 'rdConversasApi';
 
+type SimpleListOptions = {
+	context: IExecuteFunctions;
+	itemIndex: number;
+	url: string;
+	returnAll: boolean;
+	limit: number;
+	listKeys: string[];
+};
+
+type PaginatedListOptions = SimpleListOptions & {
+	pageSize: number;
+	defaultPageSize: number;
+	extraQs?: IDataObject;
+};
+
 export function isObject(value: unknown): value is IDataObject {
 	return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
@@ -94,14 +109,9 @@ export function limitItems(items: IDataObject[], returnAll: boolean, limit: numb
 	return returnAll ? items : items.slice(0, Math.max(1, limit));
 }
 
-export async function fetchSimpleList(
-	context: IExecuteFunctions,
-	itemIndex: number,
-	url: string,
-	returnAll: boolean,
-	limit: number,
-	listKeys: string[],
-): Promise<IDataObject[]> {
+export async function fetchSimpleList(options: SimpleListOptions): Promise<IDataObject[]> {
+	const { context, itemIndex, url, returnAll, limit, listKeys } = options;
+
 	const response = await conversasRequest(context, itemIndex, {
 		method: 'GET',
 		url,
@@ -111,17 +121,19 @@ export async function fetchSimpleList(
 	return limitItems(extractItems(response, listKeys), returnAll, limit);
 }
 
-export async function fetchPaginatedList(
-	context: IExecuteFunctions,
-	itemIndex: number,
-	url: string,
-	returnAll: boolean,
-	limit: number,
-	pageSize: number,
-	defaultPageSize: number,
-	listKeys: string[],
-	extraQs: IDataObject = {},
-): Promise<IDataObject[]> {
+export async function fetchPaginatedList(options: PaginatedListOptions): Promise<IDataObject[]> {
+	const {
+		context,
+		itemIndex,
+		url,
+		returnAll,
+		limit,
+		pageSize,
+		defaultPageSize,
+		listKeys,
+		extraQs = {},
+	} = options;
+
 	const effectivePageSize = Math.max(1, Math.min(200, pageSize || defaultPageSize));
 	let page = 1;
 	const results: IDataObject[] = [];
