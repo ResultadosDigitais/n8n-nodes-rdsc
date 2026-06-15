@@ -1,82 +1,128 @@
-# Name of Project
+# n8n-nodes-rdsc
 
-The first phrase should describe the project briefly, for example, this is the main template to be used by all RD Github Repositories. 
+Community node to integrate n8n with **RD Station Conversas**.
 
-Second paragraph is dedicated to describe it: What this library/api/whatever does and what does not. 
-What the advantagens of this project? Why use it instead another public library. For example, 
-by using this api, we abstract what log library is used in order to provide a simple interface 
-to developers that wants to log into pre-defined formats.  
+This package adds two nodes to n8n:
 
-## Audience
+- **RD Station Conversas**: read/write operations for Conversas resources (contacts, messages, employees, wallets, templates, campaigns, metadata).
+- **RD Station Conversas Trigger**: starts workflows when RD Station Conversas sends webhook events to n8n.
 
-Describe here the main audience from this project. Eg: This Template is designed for Developers or Tech Leaders. 
+## Implemented resources
 
-## Useful terminology
+| Resource | Operations |
+| --- | --- |
+| Messages | Send, Send Template, Get History |
+| Contacts | Get Many, Get by Phone, Create, Update |
+| Employees | Get Many, Get |
+| Wallets | Get Many, Add Contact, Delete Contact |
+| Templates | Get Many |
+| Campaigns | Get Many, Get |
+| Metadata (Config) | List Flows, List Workflows, List WhatsApp Integrations, Get Job |
 
-Lists definitions of terms that the reader needs to know to follow the tutorial. For example: what is lead? what is a conversion? You include charts here
+### `RD Station Conversas Trigger` events
 
-![pretty-diagram](https://user-images.githubusercontent.com/18356186/54356236-e163b900-4639-11e9-9bb1-e171bcd2a025.png)
+Configure the webhook URL from n8n in RD Station Conversas and select the matching event:
 
-## Getting started
+- `message_received`
+- `contact_created`
+- `contact_updated`
+- `attendance_started`
+- `attendance_finished`
 
-### Requirements
+## Authentication
 
-Lists concepts the reader should be familiar with prior to starting, as well as any software or hardware requirements. 
-If possible, please create a link to instalation documentation or use it inline.
+Credential: **RD Station Conversas API** (JWT).
 
-* [rd-docker installed](https://oraculo.rdstation.com.br/referencias/wiki/como-configurar-o-ambiente-de-desenvolvimento-utilizando-docker)
-* Rails v6.2 installed
-* Ruby v2.7.x installed
-* Any of my dependencies up and running:
+1. Access RD Station Conversas.
+2. Go to **Apps e Integrações** > **API**.
+3. Copy the JWT token generated for your account.
+
+API base URLs:
+
+- Production: `https://api.tallos.com.br`
+- Legacy: `https://api.megasac.tallos.com.br`
+
+Official API documentation:
+
+- https://developers.rdstation.com/reference/conversas-v2-introduction
+
+## Installation
+
+In n8n (Community Nodes):
+
+1. Go to **Settings** > **Community Nodes**.
+2. Click **Install**.
+3. Enter the package name: `n8n-nodes-rdsc`.
+4. Complete installation and reload the editor if needed.
+
+## Quick start
+
+### 1) List contacts
+
+- Node: `RD Station Conversas`
+- Resource: `Contact`
+- Operation: `Get Many`
+
+### 2) Send a message
+
+- Node: `RD Station Conversas`
+- Resource: `Message`
+- Operation: `Send`
+- Required: `Contact ID`, `Message`, `Sent By`
+
+### 3) Send a template message
+
+- Node: `RD Station Conversas`
+- Resource: `Message`
+- Operation: `Send Template`
+- Required: `Recipient Number`, `Template Message ID`
+
+### 4) Trigger workflow on incoming webhook
+
+- Node: `RD Station Conversas Trigger`
+- Event: `Message Received`
+- Copy the webhook URL from n8n and register it in RD Station Conversas
+- Optional: configure `Authentication Header` + `Authentication Key`
+
+## Pagination and validations
+
+- List operations support `Return All`, `Limit`, and `Page` / `Page Size` where applicable.
+- Contact phone numbers for WhatsApp should use E.164 format (e.g. `5511999998888`).
+- Template messages use API v3 (`/v3/messages/template/send`) and do not create an attendance session.
+- Message history requires Advanced plan and may require encryption on Professional accounts.
+
+## Local development
 
 ```bash
-$ gem install my_dep_here
+npm install
+npm run build
+npm run dev
+npm run lint
 ```
 
-### Running in Local Environment
+## Quality and publishing (Verified Community Node checklist)
 
-Provide description how to run locally but also command lines:
+Based on the community node publishing reference and n8n ecosystem guidelines, this package should maintain:
 
-1. Start Container
-```bash
-$ rd-docker s
-```
-2. Access http://localhost:8008
+1. **Code transparency**
+   - Public GitHub repository.
+   - Clear, auditable node source code and README.
+2. **Package identity**
+   - Package name following the community node pattern (`n8n-nodes-*`).
+   - Consistent metadata in `package.json` (keywords, license, nodes, credentials).
+3. **Documentation**
+   - README with credentials, operations, examples, and limitations.
+4. **Quality**
+   - Run local linting and review before publishing.
+   - (Optional) community package scanner:
 
-3. Login using default credentials:
-* Username: my_user
-* Password: my_pass
+     ```bash
+     npx @n8n/scan-community-package n8n-nodes-rdsc
+     ```
 
-### Running Tests
+5. **Submission**
+   - Publish to npm and submit via the n8n Creator Portal with the correct links.
 
-Provide description how to run tests locally. Command lines are really important:
+## License
 
-```bash
-$ rd-docker c
-$ rspec .
-```
-
-### Runing in Production environment
-
-Explains how to run in production environment and apply your changes too.
-
-1. Access [Spinnaker](https://spinnaker.rdops.systems/#/applications/my-app/clusters);
-2. Go to Pipelines on left menu. Click on em `Start Manual Execution` on disered execution
-
-<img src="https://user-images.githubusercontent.com/9935397/82076477-48548600-96b4-11ea-8a13-84e14f6463b0.png" height="300">
-
-3. Choose the branch
-
-<img src="https://user-images.githubusercontent.com/9935397/82076681-979ab680-96b4-11ea-948f-974a3d518378.png" height="300">
-
-4. Click on Run. 
-5. Wait until finished
-6. Test it using [Production URL](https://www.google.com)
-7. Click on Continue to merge it
-
-## What's next (Optional)
-
-* Bullet points
-* That you believe
-* Are the next steps
-* But don't try to predict all your future
+MIT — see [LICENSE](./LICENSE) when available.
