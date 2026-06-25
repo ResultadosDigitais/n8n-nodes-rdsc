@@ -1,128 +1,52 @@
 # n8n-nodes-rdsc
 
-Community node to integrate n8n with **RD Station Conversas**.
+Community node for RD Station Conversas.
 
-This package adds two nodes to n8n:
+## Current operations
 
-- **RD Station Conversas**: read/write operations for Conversas resources (contacts, messages, employees, wallets, templates, campaigns, metadata).
-- **RD Station Conversas Trigger**: starts workflows when RD Station Conversas sends webhook events to n8n.
+- Analytics: Get Attendance Retention, Get Attendance Reviews Average, Get Attendance Summary, Get Contacts Origin
+- Contact: Create Many, Create WhatsApp Business Contact, Delete From Wallet, Delete Many, Get by CPF, Get by Phone, Get Many, Update by Phone, Update WhatsApp Business Contact
+- Message: Forward to Contact, Get History, Send
+- Report: Get Many
 
-## Implemented resources
+## Credentials
 
-| Resource | Operations |
-| --- | --- |
-| Messages | Send, Send Template, Get History |
-| Contacts | Get Many, Get by Phone, Create, Update |
-| Employees | Get Many, Get |
-| Wallets | Get Many, Add Contact, Delete Contact |
-| Templates | Get Many |
-| Campaigns | Get Many, Get |
-| Metadata (Config) | List Flows, List Workflows, List WhatsApp Integrations, Get Job |
+The node supports a token sent as `Authorization: Bearer <token>`.
 
-### `RD Station Conversas Trigger` events
+The credential also includes a custom header option for accounts that require a different API token header.
 
-Configure the webhook URL from n8n in RD Station Conversas and select the matching event:
+## API base URL
 
-- `message_received`
-- `contact_created`
-- `contact_updated`
-- `attendance_started`
-- `attendance_finished`
+The default base URL is:
 
-## Authentication
-
-Credential: **RD Station Conversas API** (JWT).
-
-1. Access RD Station Conversas.
-2. Go to **Apps e Integrações** > **API**.
-3. Copy the JWT token generated for your account.
-
-API base URLs:
-
-- Production: `https://api.tallos.com.br`
-- Legacy: `https://api.megasac.tallos.com.br`
-
-Official API documentation:
-
-- https://developers.rdstation.com/reference/conversas-v2-introduction
-
-## Installation
-
-In n8n (Community Nodes):
-
-1. Go to **Settings** > **Community Nodes**.
-2. Click **Install**.
-3. Enter the package name: `n8n-nodes-rdsc`.
-4. Complete installation and reload the editor if needed.
-
-## Quick start
-
-### 1) List contacts
-
-- Node: `RD Station Conversas`
-- Resource: `Contact`
-- Operation: `Get Many`
-
-### 2) Send a message
-
-- Node: `RD Station Conversas`
-- Resource: `Message`
-- Operation: `Send`
-- Required: `Contact ID`, `Message`, `Sent By`
-
-### 3) Send a template message
-
-- Node: `RD Station Conversas`
-- Resource: `Message`
-- Operation: `Send Template`
-- Required: `Recipient Number`, `Template Message ID`
-
-### 4) Trigger workflow on incoming webhook
-
-- Node: `RD Station Conversas Trigger`
-- Event: `Message Received`
-- Copy the webhook URL from n8n and register it in RD Station Conversas
-- Optional: configure `Authentication Header` + `Authentication Key`
-
-## Pagination and validations
-
-- List operations support `Return All`, `Limit`, and `Page` / `Page Size` where applicable.
-- Contact phone numbers for WhatsApp should use E.164 format (e.g. `5511999998888`).
-- Template messages use API v3 (`/v3/messages/template/send`) and do not create an attendance session.
-- Message history requires Advanced plan and may require encryption on Professional accounts.
-
-## Local development
-
-```bash
-npm install
-npm run build
-npm run dev
-npm run lint
+```text
+https://api.tallos.com.br/v2
 ```
 
-## Quality and publishing (Verified Community Node checklist)
+The field is editable because some RD Station Conversas accounts may still use a legacy API host.
 
-Based on the community node publishing reference and n8n ecosystem guidelines, this package should maintain:
+## Safety
 
-1. **Code transparency**
-   - Public GitHub repository.
-   - Clear, auditable node source code and README.
-2. **Package identity**
-   - Package name following the community node pattern (`n8n-nodes-*`).
-   - Consistent metadata in `package.json` (keywords, license, nodes, credentials).
-3. **Documentation**
-   - README with credentials, operations, examples, and limitations.
-4. **Quality**
-   - Run local linting and review before publishing.
-   - (Optional) community package scanner:
+`Contact: Delete Many` is destructive and is available only for RD Station Conversas Advanced plan accounts. It deletes contacts matching the selected filter (`tag_name`, `integration`, or `$all`), and deletions are irreversible.
 
-     ```bash
-     npx @n8n/scan-community-package n8n-nodes-rdsc
-     ```
+## Validation
 
-5. **Submission**
-   - Publish to npm and submit via the n8n Creator Portal with the correct links.
+Build and lint before publishing:
 
-## License
+```bash
+npm run build
+npm run lint
+npm pack --dry-run
+```
 
-MIT — see [LICENSE](./LICENSE) when available.
+## Publishing
+
+Use the GitHub Actions workflow in `.github/workflows/publish.yml` for npm publication with provenance.
+
+From a clean main branch, run:
+
+```bash
+npm run release
+```
+
+This bumps the version, creates the tag, and pushes it. The `Publish` workflow runs on version tags matching `*.*.*` and publishes the package to npm.
