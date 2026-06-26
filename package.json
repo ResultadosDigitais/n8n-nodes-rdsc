@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-rdsc",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "n8n community node for RD Station Conversas",
 	"author": {
 		"name": "Resultados Digitais",
