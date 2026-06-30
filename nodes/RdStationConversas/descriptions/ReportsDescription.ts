@@ -166,7 +166,7 @@ export const reportsDescription: INodeProperties[] = [
 						value: 'operators',
 					},
 					{
-						name: 'Rejecteds',
+						name: 'Rejected',
 						value: 'rejecteds',
 					},
 				],

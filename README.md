@@ -2,6 +2,16 @@
 
 Community node for RD Station Conversas.
 
+## Installation
+
+Install this package from the n8n Community Nodes screen:
+
+1. Open n8n.
+2. Go to **Settings** > **Community Nodes**.
+3. Select **Install**.
+4. Enter `n8n-nodes-rdsc`.
+5. Confirm the installation.
+
 ## Current operations
 
 - Analytics: Get Attendance Retention, Get Attendance Reviews Average, Get Attendance Summary, Get Contacts Origin
@@ -14,6 +24,21 @@ Community node for RD Station Conversas.
 The node supports a token sent as `Authorization: Bearer <token>`.
 
 The credential also includes a custom header option for accounts that require a different API token header.
+
+## Usage example
+
+Send a WhatsApp message to an existing RD Station Conversas contact:
+
+1. Add an **RD Station Conversas** node.
+2. Select **Contact** as the resource and **Get by Phone** as the operation.
+3. Enter the contact phone number and set **Channel** to `WhatsApp`.
+4. Execute the node and copy the returned contact/customer ID.
+5. Add another **RD Station Conversas** node.
+6. Select **Message** as the resource and **Send** as the operation.
+7. Set **Contact ID** to the ID returned by the previous node. In an n8n expression, this can be mapped from the previous output.
+8. Enter the message text and execute the node.
+
+The message operation sends the request to RD Station Conversas using the configured API credential.
 
 ## API base URL
 
